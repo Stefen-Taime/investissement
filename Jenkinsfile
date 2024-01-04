@@ -10,20 +10,11 @@ pipeline {
         }
         stage('Clone Repo') {
             steps {
-                // Step to clone the Git repository
-                git url: 'https://github.com/Stefen-Taime/investissement.git'
+                git(credentialsId: 'github-access-buildracineproject', url: 'https://github.com/Stefen-Taime/investissement.git')
             }
         }
-        stage('Build') {
-            steps {
-                // Commands to build your project
-                // For example, for a Java project, you might use Maven or Gradle
-                script {
-                    // Replace this with your build command
-                    sh 'echo "Build command here"'
-                }
-            }
-        }
+
+       
         stage('Tests') {
             steps {
                 script {
