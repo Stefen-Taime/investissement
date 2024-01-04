@@ -26,10 +26,17 @@ pipeline {
         }
         stage('Tests') {
             steps {
-                // Commands to run tests
                 script {
-                    // Replace this with your command to run tests
-                    sh 'echo "Command to run tests here"'
+                    // Vérifier l'existence des fichiers CSV
+                    sh '''
+                    set -e
+                    [ -f infra/investment/pipelines/AAPL.csv ] || { echo "AAPL.csv missing"; exit 1; }
+                    [ -f infra/investment/pipelines/AMZN.csv ] || { echo "AMZN.csv missing"; exit 1; }
+                    [ -f infra/investment/pipelines/GOOG.csv ] || { echo "GOOG.csv missing"; exit 1; }
+                    [ -f infra/investment/pipelines/MSFT.csv ] || { echo "MSFT.csv missing"; exit 1; }
+                    [ -f infra/investment/pipelines/ORCL.csv ] || { echo "ORCL.csv missing"; exit 1; }
+                    echo "All CSV files are present."
+                    '''
                 }
             }
         }
