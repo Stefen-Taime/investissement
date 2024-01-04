@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finance Dashboard</title>
+    <link rel="stylesheet" href="finance.css">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div>
+        <label for="ticker-select">Choose a Stock:</label>
+        <select id="ticker-select">
+            <!-- Options will be dynamically filled -->
+        </select>
+
+        <label for="year-select">Choose a Year:</label>
+        <select id="year-select">
+            <!-- Options will be dynamically filled -->
+        </select>
+
+        <label for="month-select">Choose a Month:</label>
+        <select id="month-select">
+            <!-- Options will be dynamically filled -->
+        </select>
+
+        <button id="load-data">Load Data</button>
+    </div>
+
+    <div class="chart-container">
+        <canvas id="financeChart"></canvas>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="finance.js"></script>
+</body>
+</html>
