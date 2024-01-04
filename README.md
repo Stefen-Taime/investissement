@@ -1,1 +1,1 @@
-# Open SOurce CICD delta pipeline
+# Open Source CICD delta pipeline
