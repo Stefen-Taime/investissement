@@ -10,7 +10,7 @@ pipeline {
         }
         stage('Clone Repo') {
             steps {
-                git(credentialsId: 'github-access-buildracineproject', url: 'https://github.com/Stefen-Taime/investissement.git')
+                git(credentialsId: 'cicd', url: 'https://github.com/Stefen-Taime/investissement.git')
             }
         }
 
