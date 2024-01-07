@@ -31,13 +31,14 @@ pipeline {
         }
 
         stage('Prepare Artifact') {
-            steps {
-                script {
-                    sh 'echo "Zipping the project..."'
-                    sh 'tar -czvf project-artifact.tar.gz .'
-                }
-            }
+    steps {
+        script {
+            sh 'echo "Zipping the project..."'
+            sh 'tar --exclude=project-artifact.tar.gz -czvf project-artifact.tar.gz .'
         }
+    }
+}
+
 
         stage('Upload to MinIO') {
     steps {
