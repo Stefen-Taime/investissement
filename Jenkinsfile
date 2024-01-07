@@ -41,23 +41,26 @@ pipeline {
 
       
 
-        stage('Merge to Main/Master') {
+      stage('Checkout Main Branch') {
     steps {
         script {
-            sh 'echo "Fetching all branches..."'
-            sh 'git fetch --all'
-            
             sh 'echo "Checking out the main branch..."'
-            sh 'git checkout main || git checkout master'
-
-            sh 'echo "Merging feature branch into main/master..."'
-            sh 'git merge ${BRANCH_NAME}'
-
-            sh 'echo "Pushing to remote..."'
-            sh 'git push origin main || git push origin master'
+            sh 'git fetch --all'
+            sh 'git checkout -b main origin/main'
         }
     }
 }
+
+        stage('Merge Feature into Main') {
+            steps {
+                script {
+                    sh 'echo "Merging feature branch into main..."'
+                    sh "git merge feature/01/buildRacineProject"
+                    sh 'echo "Pushing changes to remote..."'
+                    sh 'git push origin main'
+                }
+            }
+        }
 
 
         stage('Deployment') {
