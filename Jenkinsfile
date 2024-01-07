@@ -34,7 +34,8 @@ pipeline {
             steps {
                 script {
                     sh 'echo "Zipping the project..."'
-                    sh 'tar -czvf project-artifact.tar.gz .'
+                    tar --exclude='./.git' -czvf project-artifact.tar.gz .
+
                 }
             }
         }
