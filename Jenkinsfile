@@ -39,6 +39,16 @@ pipeline {
             }
         }
 
+        stage('Upload to MinIO') {
+    steps {
+        script {
+            sh 'mc alias set minio http://minio:9000 MINIO_ACCESS_KEY MINIO_SECRET_KEY'
+            sh 'mc cp project-artifact.tar.gz minio/artifact/'
+        }
+    }
+}
+
+
         stage('Checkout Main Branch') {
             steps {
                 script {
