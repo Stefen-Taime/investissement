@@ -44,7 +44,7 @@ pipeline {
             steps {
                 script {
                     sh 'echo "Uploading to MinIO..."'
-                    sh 'mc cp project-artifact.zip minio/artifact/'
+                    sh 'mc cp project-artifact.zip minio/artifact'
                 }
             }
         }
