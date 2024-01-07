@@ -34,8 +34,7 @@ pipeline {
             steps {
                 script {
                     sh 'echo "Zipping the project..."'
-                    tar --exclude='./.git' -czvf project-artifact.tar.gz .
-
+                    sh 'tar -czvf project-artifact.tar.gz .'
                 }
             }
         }
@@ -44,7 +43,7 @@ pipeline {
             steps {
                 script {
                     sh 'echo "Uploading to MinIO..."'
-                    sh 'mc cp project-artifact.zip minio/artifact'
+                    sh 'mc cp project-artifact.zip minio/artifact/'
                 }
             }
         }
