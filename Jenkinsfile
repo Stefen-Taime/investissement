@@ -42,17 +42,23 @@ pipeline {
       
 
         stage('Merge to Main/Master') {
-            steps {
-                script {
-                    sh 'echo "Merging to main/master branch..."'
-                    sh '''
-                    git checkout main
-                    git merge ${BRANCH_NAME}
-                    git push origin main
-                    '''
-                }
-            }
+    steps {
+        script {
+            sh 'echo "Fetching all branches..."'
+            sh 'git fetch --all'
+            
+            sh 'echo "Checking out the main branch..."'
+            sh 'git checkout main || git checkout master'
+
+            sh 'echo "Merging feature branch into main/master..."'
+            sh 'git merge ${BRANCH_NAME}'
+
+            sh 'echo "Pushing to remote..."'
+            sh 'git push origin main || git push origin master'
         }
+    }
+}
+
 
         stage('Deployment') {
             steps {
