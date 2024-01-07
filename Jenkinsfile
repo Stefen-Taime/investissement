@@ -10,7 +10,6 @@ pipeline {
 
         stage('Clone Repo') {
             steps {
-               
                 git(credentialsId: 'ops', url: 'https://github.com/Stefen-Taime/investissement.git', branch: 'feature/01/buildRacineProject')
             }
         }
@@ -31,10 +30,40 @@ pipeline {
             }
         }
 
+        stage('Prepare Artifact') {
+            steps {
+                script {
+                    sh 'echo "Zipping the project..."'
+                    sh 'zip -r project-artifact.zip .'
+                }
+            }
+        }
+
+        stage('Upload to MinIO') {
+            steps {
+                script {
+                    sh 'echo "Uploading to MinIO..."'
+                    sh 'mc cp project-artifact.zip minio/artifact/'
+                }
+            }
+        }
+
+        stage('Merge to Main/Master') {
+            steps {
+                script {
+                    sh 'echo "Merging to main/master branch..."'
+                    sh '''
+                    git checkout main
+                    git merge ${BRANCH_NAME}
+                    git push origin main
+                    '''
+                }
+            }
+        }
+
         stage('Deployment') {
             steps {
                 script {
-                    // Replace this with your actual deployment command
                     sh 'echo "Deployment command here"'
                 }
             }
