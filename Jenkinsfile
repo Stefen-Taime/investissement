@@ -34,7 +34,7 @@ pipeline {
             steps {
                 script {
                     sh 'echo "Zipping the project..."'
-                    sh 'zip -r project-artifact.zip .'
+                    sh 'tar -czvf project-artifact.tar.gz .'
                 }
             }
         }
