@@ -39,14 +39,7 @@ pipeline {
             }
         }
 
-        stage('Upload to MinIO') {
-            steps {
-                script {
-                    sh 'echo "Uploading to MinIO..."'
-                    sh 'mc cp project-artifact.zip minio/artifact/'
-                }
-            }
-        }
+      
 
         stage('Merge to Main/Master') {
             steps {
