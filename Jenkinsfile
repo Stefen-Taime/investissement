@@ -27,7 +27,7 @@ pipeline {
             steps {
                 script {
                     sh 'pwd'
-                    sh 'ls -la' // List files in the current directory
+                    sh 'ls -la' 
                     def csvFiles = ['AAPL', 'AMZN', 'GOOG', 'MSFT', 'ORCL']
                     csvFiles.each { fileName ->
                         sh "if [ ! -f infra/investment/pipelines/${fileName}.csv ]; then echo '${fileName}.csv missing in ' \$(pwd); exit 1; fi"
@@ -37,41 +37,34 @@ pipeline {
             }
         }
 
-    stage('Prepare Artifact') {
-    steps {
-        script {
-            STAGING_DIR = 'staging_dir'
-            ARTIFACT_NAME = "project-artifact-${env.BRANCH_NAME.replaceAll('/', '-')}-${env.BUILD_NUMBER}.tar.gz"
-
-            // Créer un répertoire temporaire
-            sh "mkdir -p ${STAGING_DIR}"
-
-            // Copier les fichiers nécessaires dans le répertoire temporaire, en excluant le répertoire temporaire lui-même
-            sh "find . -maxdepth 1 -not -name '${STAGING_DIR}' -not -name '.' -exec cp -r {} ${STAGING_DIR}/ \\;"
-
-            // Créer l'archive à partir du répertoire temporaire
-            sh "tar -czvf ${ARTIFACT_NAME} -C ${STAGING_DIR} ."
-
-            // Supprimer le répertoire temporaire
-            sh "rm -rf ${STAGING_DIR}"
-        }
-    }
-}
-
-
-
-
-stage('Upload to MinIO') {
-    steps {
-        withCredentials([usernamePassword(credentialsId: MINIO_CREDENTIALS, usernameVariable: 'MINIO_ACCESS_KEY', passwordVariable: 'MINIO_SECRET_KEY')]) {
+        stage('Prepare Artifact') {
+        steps {
             script {
-                sh "mc alias set ${MINIO_ALIAS} ${MINIO_URL} ${MINIO_ACCESS_KEY} ${MINIO_SECRET_KEY}"
-                sh "mc cp ${ARTIFACT_NAME} ${MINIO_ALIAS}/artifact/${env.BRANCH_NAME}/"
+                STAGING_DIR = 'staging_dir'
+                ARTIFACT_NAME = "project-artifact-${env.BRANCH_NAME.replaceAll('/', '-')}-${env.BUILD_NUMBER}.tar.gz"
+
+                sh "mkdir -p ${STAGING_DIR}"
+
+                sh "find . -maxdepth 1 -not -name '${STAGING_DIR}' -not -name '.' -exec cp -r {} ${STAGING_DIR}/ \\;"
+
+                sh "tar -czvf ${ARTIFACT_NAME} -C ${STAGING_DIR} ."
+
+                sh "rm -rf ${STAGING_DIR}"
             }
         }
     }
-}
 
+
+        stage('Upload to MinIO') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: MINIO_CREDENTIALS, usernameVariable: 'MINIO_ACCESS_KEY', passwordVariable: 'MINIO_SECRET_KEY')]) {
+                    script {
+                        sh "mc alias set ${MINIO_ALIAS} ${MINIO_URL} ${MINIO_ACCESS_KEY} ${MINIO_SECRET_KEY}"
+                        sh "mc cp ${ARTIFACT_NAME} ${MINIO_ALIAS}/artifact/${env.BRANCH_NAME}/"
+                    }
+                }
+            }
+        }
 
         stage('Checkout Main Branch') {
             steps {
@@ -99,7 +92,6 @@ stage('Upload to MinIO') {
         }
     }
 }
-
 
         stage('Deployment') {
             steps {
