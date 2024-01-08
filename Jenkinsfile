@@ -43,10 +43,11 @@ pipeline {
             STAGING_DIR = 'staging_dir'
             ARTIFACT_NAME = "project-artifact-${env.BRANCH_NAME.replaceAll('/', '-')}-${env.BUILD_NUMBER}.tar.gz"
 
-            // Créer un répertoire temporaire et copier les fichiers nécessaires
+            // Créer un répertoire temporaire
             sh "mkdir -p ${STAGING_DIR}"
-            sh "cp -r * ${STAGING_DIR}/"
-            sh "rm -rf ${STAGING_DIR}/.git ${STAGING_DIR}/logs ${STAGING_DIR}/*/__pycache__"
+
+            // Copier les fichiers nécessaires dans le répertoire temporaire, en excluant le répertoire temporaire lui-même
+            sh "rsync -av --exclude='${STAGING_DIR}' . ${STAGING_DIR}/"
 
             // Créer l'archive à partir du répertoire temporaire
             sh "tar -czvf ${ARTIFACT_NAME} -C ${STAGING_DIR} ."
@@ -56,6 +57,7 @@ pipeline {
         }
     }
 }
+
 
 
 stage('Upload to MinIO') {
