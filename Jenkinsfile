@@ -38,13 +38,17 @@ pipeline {
         }
 
         stage('Prepare Artifact') {
-            steps {
-                script {
-                    ARTIFACT_NAME = "project-artifact-${env.BRANCH_NAME}-${env.BUILD_NUMBER}.tar.gz"
-                    sh "tar --exclude='.git' --exclude='some_other_directory' -czvf ${ARTIFACT_NAME} ."
-                }
-            }
+    steps {
+        script {
+            // Replace slashes in ARTIFACT_NAME to avoid directory structure interpretation
+            ARTIFACT_NAME = "project-artifact-feature-01-buildRacineProject-39.tar.gz"
+            // Optionally, create directories if needed
+            sh "mkdir -p feature/01/buildRacineProject"
+            sh "tar --exclude='.git' --exclude='some_other_directory' -czvf ${ARTIFACT_NAME} ."
         }
+    }
+}
+
 
         stage('Upload to MinIO') {
             steps {
