@@ -47,7 +47,7 @@ pipeline {
             sh "mkdir -p ${STAGING_DIR}"
 
             // Copier les fichiers nécessaires dans le répertoire temporaire, en excluant le répertoire temporaire lui-même
-            sh "rsync -av --exclude='${STAGING_DIR}' . ${STAGING_DIR}/"
+            sh "find . -maxdepth 1 -not -name '${STAGING_DIR}' -not -name '.' -exec cp -r {} ${STAGING_DIR}/ \\;"
 
             // Créer l'archive à partir du répertoire temporaire
             sh "tar -czvf ${ARTIFACT_NAME} -C ${STAGING_DIR} ."
@@ -57,6 +57,7 @@ pipeline {
         }
     }
 }
+
 
 
 
