@@ -37,13 +37,22 @@ pipeline {
             }
         }
 
-     stage('Prepare Artifact') {
+    stage('Prepare Artifact') {
     steps {
         script {
+            STAGING_DIR = 'staging_dir'
             ARTIFACT_NAME = "project-artifact-${env.BRANCH_NAME.replaceAll('/', '-')}-${env.BUILD_NUMBER}.tar.gz"
 
-            // Commande tar en excluant les dossiers et fichiers non désirés
-            sh "tar --exclude='.git' --exclude='logs' -czvf ${ARTIFACT_NAME} ."
+            // Créer un répertoire temporaire et copier les fichiers nécessaires
+            sh "mkdir -p ${STAGING_DIR}"
+            sh "cp -r * ${STAGING_DIR}/"
+            sh "rm -rf ${STAGING_DIR}/.git ${STAGING_DIR}/logs ${STAGING_DIR}/*/__pycache__"
+
+            // Créer l'archive à partir du répertoire temporaire
+            sh "tar -czvf ${ARTIFACT_NAME} -C ${STAGING_DIR} ."
+
+            // Supprimer le répertoire temporaire
+            sh "rm -rf ${STAGING_DIR}"
         }
     }
 }
