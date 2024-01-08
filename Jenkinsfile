@@ -37,16 +37,17 @@ pipeline {
             }
         }
 
-      stage('Prepare Artifact') {
+     stage('Prepare Artifact') {
     steps {
         script {
-            // Replace slashes in ARTIFACT_NAME with dashes or underscores
             ARTIFACT_NAME = "project-artifact-${env.BRANCH_NAME.replaceAll('/', '-')}-${env.BUILD_NUMBER}.tar.gz"
-            // Tar command excluding .git directory
-            sh "tar --exclude='.git' -czvf ${ARTIFACT_NAME} ."
+
+            // Commande tar en excluant les dossiers et fichiers non désirés
+            sh "tar --exclude='.git' --exclude='logs' -czvf ${ARTIFACT_NAME} ."
         }
     }
 }
+
 
 stage('Upload to MinIO') {
     steps {
