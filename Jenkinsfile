@@ -34,6 +34,8 @@ pipeline {
             }
         }
 
+        }
+
         stage('Prepare Artifact') {
             steps {
                 sh "tar --exclude=\${ARTIFACT_NAME} -czvf \${ARTIFACT_NAME} ."
