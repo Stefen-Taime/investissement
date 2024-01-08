@@ -26,14 +26,14 @@ pipeline {
     steps {
         script {
     sh 'pwd'
-    sh 'ls -la' // Pour lister les fichiers dans le répertoire courant
+    sh 'ls -la'
     def csvFiles = ['AAPL', 'AMZN', 'GOOG', 'MSFT', 'ORCL']
-    csvFiles.each { file ->
-        def command = "test -f infra/investment/pipelines/${file}.csv || { echo '${file}.csv missing in ' + pwd(); exit 1; }"
-        sh command
+    csvFiles.each { fileName ->
+        sh "if [ ! -f infra/investment/pipelines/${fileName}.csv ]; then echo '${fileName}.csv missing in ' $(pwd); exit 1; fi"
     }
     echo "All CSV files are present."
 }
+
 
     }
 }
