@@ -37,30 +37,28 @@ pipeline {
             }
         }
 
-        stage('Prepare Artifact') {
+       stage('Prepare Artifact') {
     steps {
         script {
-            // Replace slashes in ARTIFACT_NAME to avoid directory structure interpretation
-            ARTIFACT_NAME = "project-artifact-feature-01-buildRacineProject-39.tar.gz"
-            // Optionally, create directories if needed
-            sh "mkdir -p feature/01/buildRacineProject"
+            // Define the artifact name with environment variables
+            ARTIFACT_NAME = "project-artifact-${env.BRANCH_NAME}-${env.BUILD_NUMBER}.tar.gz"
+            // Tar command excluding .git directory and any other directories that might change
             sh "tar --exclude='.git' -czvf ${ARTIFACT_NAME} ."
         }
     }
 }
 
-
-        stage('Upload to MinIO') {
-            steps {
-                withCredentials([usernamePassword(credentialsId: MINIO_CREDENTIALS, usernameVariable: 'MINIO_ACCESS_KEY', passwordVariable: 'MINIO_SECRET_KEY')]) {
-                    script {
-                        ARTIFACT_NAME = "project-artifact-${env.BRANCH_NAME}-${env.BUILD_NUMBER}.tar.gz"
-                        sh "mc alias set ${MINIO_ALIAS} ${MINIO_URL} ${MINIO_ACCESS_KEY} ${MINIO_SECRET_KEY}"
-                        sh "mc cp ${ARTIFACT_NAME} ${MINIO_ALIAS}/artifact/${env.BRANCH_NAME}/"
-                    }
-                }
+stage('Upload to MinIO') {
+    steps {
+        withCredentials([usernamePassword(credentialsId: MINIO_CREDENTIALS, usernameVariable: 'MINIO_ACCESS_KEY', passwordVariable: 'MINIO_SECRET_KEY')]) {
+            script {
+                sh "mc alias set ${MINIO_ALIAS} ${MINIO_URL} ${MINIO_ACCESS_KEY} ${MINIO_SECRET_KEY}"
+                sh "mc cp ${ARTIFACT_NAME} ${MINIO_ALIAS}/artifact/${env.BRANCH_NAME}/"
             }
         }
+    }
+}
+
 
         stage('Checkout Main Branch') {
             steps {
