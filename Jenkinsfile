@@ -37,12 +37,12 @@ pipeline {
             }
         }
 
-       stage('Prepare Artifact') {
+      stage('Prepare Artifact') {
     steps {
         script {
-            // Define the artifact name with environment variables
-            ARTIFACT_NAME = "project-artifact-${env.BRANCH_NAME}-${env.BUILD_NUMBER}.tar.gz"
-            // Tar command excluding .git directory and any other directories that might change
+            // Replace slashes in ARTIFACT_NAME with dashes or underscores
+            ARTIFACT_NAME = "project-artifact-${env.BRANCH_NAME.replaceAll('/', '-')}-${env.BUILD_NUMBER}.tar.gz"
+            // Tar command excluding .git directory
             sh "tar --exclude='.git' -czvf ${ARTIFACT_NAME} ."
         }
     }
