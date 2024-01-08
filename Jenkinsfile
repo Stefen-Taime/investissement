@@ -43,11 +43,15 @@ pipeline {
         stage('Upload to MinIO') {
     steps {
         script {
-            sh 'mc alias set minio http://minio:9000 MINIO_ACCESS_KEY MINIO_SECRET_KEY'
-            sh 'mc cp project-artifact.tar.gz minio/artifact/'
+            // Using the credentials from Jenkins' credential store
+            withCredentials([usernamePassword(credentialsId: 'minio', usernameVariable: 'MINIO_ACCESS_KEY', passwordVariable: 'MINIO_SECRET_KEY')]) {
+                sh 'mc alias set minio http://minio:9000 ${MINIO_ACCESS_KEY} ${MINIO_SECRET_KEY}'
+                sh 'mc cp project-artifact.tar.gz minio/artifact/'
+            }
         }
     }
 }
+
 
 
         stage('Checkout Main Branch') {
