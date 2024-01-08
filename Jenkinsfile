@@ -25,14 +25,17 @@ pipeline {
         stage('Tests') {
     steps {
         script {
+            sh 'pwd'
+            sh 'ls -la' // Pour lister les fichiers dans le répertoire courant
             def csvFiles = ['AAPL', 'AMZN', 'GOOG', 'MSFT', 'ORCL']
             csvFiles.each {
-                sh "test -f infra/investment/pipelines/\${it}.csv || { echo '\${it}.csv missing'; exit 1; }"
+                sh "test -f infra/investment/pipelines/\${it}.csv || { echo '\${it}.csv missing in ' + pwd(); exit 1; }"
             }
             echo "All CSV files are present."
         }
     }
 }
+
 
 
         stage('Prepare Artifact') {
