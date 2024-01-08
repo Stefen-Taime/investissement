@@ -8,7 +8,6 @@ pipeline {
         MINIO_URL = 'http://minio:9000'
         MINIO_CREDENTIALS = 'minio'
         FEATURE_BRANCH = 'feature/01/buildRacineProject'
-        ARTIFACT_NAME = "project-artifact-\${BRANCH_NAME}-\${BUILD_NUMBER}.tar.gz"
     }
 
     stages {
@@ -40,15 +39,21 @@ pipeline {
 
         stage('Prepare Artifact') {
             steps {
-                sh "tar --exclude='.git' --exclude='some_other_directory' --exclude='\${ARTIFACT_NAME}' -czvf \${ARTIFACT_NAME} ."
+                script {
+                    ARTIFACT_NAME = "project-artifact-${env.BRANCH_NAME}-${env.BUILD_NUMBER}.tar.gz"
+                    sh "tar --exclude='.git' --exclude='some_other_directory' -czvf ${ARTIFACT_NAME} ."
+                }
             }
         }
 
         stage('Upload to MinIO') {
             steps {
                 withCredentials([usernamePassword(credentialsId: MINIO_CREDENTIALS, usernameVariable: 'MINIO_ACCESS_KEY', passwordVariable: 'MINIO_SECRET_KEY')]) {
-                    sh "mc alias set \${MINIO_ALIAS} \${MINIO_URL} \${MINIO_ACCESS_KEY} \${MINIO_SECRET_KEY}"
-                    sh "mc cp \${ARTIFACT_NAME} \${MINIO_ALIAS}/artifact/\${BRANCH_NAME}/"
+                    script {
+                        ARTIFACT_NAME = "project-artifact-${env.BRANCH_NAME}-${env.BUILD_NUMBER}.tar.gz"
+                        sh "mc alias set ${MINIO_ALIAS} ${MINIO_URL} ${MINIO_ACCESS_KEY} ${MINIO_SECRET_KEY}"
+                        sh "mc cp ${ARTIFACT_NAME} ${MINIO_ALIAS}/artifact/${env.BRANCH_NAME}/"
+                    }
                 }
             }
         }
