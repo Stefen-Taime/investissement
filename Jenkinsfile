@@ -65,17 +65,21 @@ pipeline {
         }
 
         stage('Merge Feature into Main') {
-            steps {
-                withCredentials([usernamePassword(credentialsId: GIT_CREDENTIALS, usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS')]) {
-                    sh '''
-                        echo "Merging feature branch into main..."
-                        git merge \${FEATURE_BRANCH}
-                        echo "Configuring Git credentials..."
-                        git push origin main
-                    '''
-                }
-            }
+    steps {
+        withCredentials([usernamePassword(credentialsId: GIT_CREDENTIALS, usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS')]) {
+            sh '''
+                echo "Merging feature branch into main..."
+                git merge \${FEATURE_BRANCH}
+                echo "Configuring Git credentials..."
+                git config --global user.email "stefentaime@gmail.com"
+                git config --global user.name "Stefen-Taime"
+                git remote set-url origin https://\${GIT_USER}:\${GIT_PASS}@github.com/Stefen-Taime/investissement.git
+                git push origin main
+            '''
         }
+    }
+}
+
 
         stage('Deployment') {
             steps {
