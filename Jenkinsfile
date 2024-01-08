@@ -23,18 +23,17 @@ pipeline {
         }
 
         stage('Tests') {
-            steps {
-                script {
-                    def csvFiles = ['AAPL', 'AMZN', 'GOOG', 'MSFT', 'ORCL']
-                    csvFiles.each {
-                        sh "test -f infra/investment/pipelines/\${it}.csv || { echo '\${it}.csv missing'; exit 1; }"
-                    }
-                    echo "All CSV files are present."
-                }
+    steps {
+        script {
+            def csvFiles = ['AAPL', 'AMZN', 'GOOG', 'MSFT', 'ORCL']
+            csvFiles.each {
+                sh "test -f infra/investment/pipelines/\${it}.csv || { echo '\${it}.csv missing'; exit 1; }"
             }
+            echo "All CSV files are present."
         }
+    }
+}
 
-        }
 
         stage('Prepare Artifact') {
             steps {
