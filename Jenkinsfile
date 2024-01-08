@@ -71,8 +71,6 @@ pipeline {
                         echo "Merging feature branch into main..."
                         git merge \${FEATURE_BRANCH}
                         echo "Configuring Git credentials..."
-                        git config --global user.email "you@example.com"
-                        git config --global user.name "Your Name"
                         git push origin main
                     '''
                 }
