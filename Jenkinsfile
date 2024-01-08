@@ -44,7 +44,7 @@ pipeline {
             ARTIFACT_NAME = "project-artifact-feature-01-buildRacineProject-39.tar.gz"
             // Optionally, create directories if needed
             sh "mkdir -p feature/01/buildRacineProject"
-            sh "tar --exclude='.git' --exclude='some_other_directory' -czvf ${ARTIFACT_NAME} ."
+            sh "tar --exclude='.git' -czvf ${ARTIFACT_NAME} ."
         }
     }
 }
