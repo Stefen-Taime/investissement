@@ -13,7 +13,9 @@ pipeline {
 
     stages {
         stage('Initialization') {
-            steps { echo 'Starting the Pipeline' }
+            steps { 
+                echo 'Starting the Pipeline' 
+            }
         }
 
         stage('Clone Repo') {
@@ -23,22 +25,18 @@ pipeline {
         }
 
         stage('Tests') {
-    steps {
-        script {
-    sh 'pwd'
-    sh 'ls -la'
-    def csvFiles = ['AAPL', 'AMZN', 'GOOG', 'MSFT', 'ORCL']
-    csvFiles.each { fileName ->
-        sh "if [ ! -f infra/investment/pipelines/${fileName}.csv ]; then echo '${fileName}.csv missing in ' $(pwd); exit 1; fi"
-    }
-    echo "All CSV files are present."
-}
-
-
-    }
-}
-
-
+            steps {
+                script {
+                    sh 'pwd'
+                    sh 'ls -la' // List files in the current directory
+                    def csvFiles = ['AAPL', 'AMZN', 'GOOG', 'MSFT', 'ORCL']
+                    csvFiles.each { fileName ->
+                        sh "if [ ! -f infra/investment/pipelines/${fileName}.csv ]; then echo '${fileName}.csv missing in ' \$(pwd); exit 1; fi"
+                    }
+                    echo "All CSV files are present."
+                }
+            }
+        }
 
         stage('Prepare Artifact') {
             steps {
@@ -73,8 +71,8 @@ pipeline {
                         echo "Merging feature branch into main..."
                         git merge \${FEATURE_BRANCH}
                         echo "Configuring Git credentials..."
-                        git remote set-url origin https://\${GIT_USER}:\${GIT_PASS}@github.com/Stefen-Taime/investissement.git
-                        echo "Pushing changes to remote..."
+                        git config --global user.email "you@example.com"
+                        git config --global user.name "Your Name"
                         git push origin main
                     '''
                 }
@@ -84,14 +82,20 @@ pipeline {
         stage('Deployment') {
             steps {
                 echo "Deploying the application..."
-                // Ajoutez ici vos étapes de déploiement spécifiques
+                // Add your specific deployment steps here
             }
         }
     }
 
     post {
-        always { echo 'Post-build cleanup' }
-        success { echo 'Build Successful!' }
-        failure { echo 'Build Failed!' }
+        always { 
+            echo 'Post-build cleanup' 
+        }
+        success { 
+            echo 'Build Successful!' 
+        }
+        failure { 
+            echo 'Build Failed!' 
+        }
     }
 }
