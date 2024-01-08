@@ -40,7 +40,7 @@ pipeline {
 
         stage('Prepare Artifact') {
             steps {
-                sh "tar --exclude=\${ARTIFACT_NAME} -czvf \${ARTIFACT_NAME} ."
+                sh "tar --exclude='.git' --exclude='some_other_directory' --exclude='\${ARTIFACT_NAME}' -czvf \${ARTIFACT_NAME} ."
             }
         }
 
