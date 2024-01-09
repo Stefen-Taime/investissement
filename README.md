@@ -103,72 +103,44 @@ Pipeline Stages CICD:
 -   Post-Process: After the pipeline, there are steps for cleanup and
     feedback depending on whether the build was a success or a failure.
 
-## Starting Up the Infrastructure:
 
--   Command: make up
+## Starting Docker Containers
 
--   Action: This command navigates to the infra directory and starts the
-    Docker containers using docker compose up. The --build flag ensures
-    that the Docker images are built, and -d runs the containers in
-    detached mode.
+- **Command**: `make up`
+- **Action**: Navigates to the infra directory and starts the Docker containers using `docker-compose up`. The `--build` flag ensures that the Docker images are built. The `-d` flag runs the containers in detached mode.
 
-Creating Bronze Tables:
+## Creating Bronze Tables
 
--   Command: make create-bronze-table
+- **Command**: `make create-bronze-table`
+- **Action**: Executes a Docker command to run a Spark job inside the `local-spark` container. This job runs the `BronzeTables.py` script, creating Bronze tables in your data architecture for initial data loading and raw data storage.
 
--   Action: Executes a Docker command to run a Spark job inside the
-    local-spark container. This job runs a script (BronzeTables.py) that
-    creates Bronze tables in your data architecture, handling initial
-    data loading and raw data storage.
+## Creating Silver Tables
 
-Creating Silver Tables:
+- **Command**: `make create-silver-table`
+- **Action**: Similar to the Bronze tables, this command runs the `SilverTables.py` script inside the `local-spark` container. Silver tables represent an intermediate layer where data is cleaned and transformed.
 
--   Command: make create-silver-table
+## Creating Gold Tables
 
--   Action: Similar to the Bronze tables, this command runs the
-    SilverTables.py script inside the local-spark container. The Silver
-    tables represent an intermediate layer where data is cleaned and
-    transformed.
+- **Command**: `make create-gold-table`
+- **Action**: Runs the `GoldTables.py` script. Gold tables are typically the final layer in a data pipeline, containing refined, business-level data ready for analysis and decision-making.
 
-Creating Gold Tables:
+## Running ETL Processes
 
--   Command: make create-gold-table
+- **Command**: `make run-etl`
+- **Action**: Executes the ETL (Extract, Transform, Load) process by running the `investment_etl.py` script in the `local-spark` container. This script handles the entire ETL process, transforming and loading data into the respective tables.
 
--   Action: This command runs the GoldTables.py script. Gold tables are
-    typically the final layer in a data pipeline, containing refined,
-    business-level data ready for analysis and decision-making.
+## Starting the API Server
 
-Running ETL Processes:
+- **Command**: `make api`
+- **Action**: Navigates to the API directory and starts the Python API server by running `main.py`. This server handles API requests for your application.
 
--   Command: make run-etl
+## Launching the Dashboard
 
--   Action: Executes the ETL (Extract, Transform, Load) process by
-    running the investment_etl.py script in the local-spark container.
-    This script handles the entire ETL process, transforming and loading
-    data into the respective tables.
+- **Command**: `make dashboard`
+- **Action**: Moves into the dashboard directory and starts a simple HTTP server using Python. This server hosts your application's dashboard for data visualization and user interaction.
 
-Starting the API Server:
+## All-In-One Command
 
--   Command: make api
+- **Command**: `make all`
+- **Action**: Sequentially executes the commands to create Bronze, Silver, and Gold tables, followed by running the ETL process. This comprehensive command sets up the entire data pipeline.
 
--   Action: Navigates to the api directory and starts the Python API
-    server by running main.py. This server handles API requests for your
-    application.
-
-Launching the Dashboard:
-
--   Command: make dashboard
-
--   Action: Moves into the dashboard directory and starts a simple HTTP
-    server using Python. This server hosts your application's dashboard
-    for data visualization and user interaction.
-
-All-In-One Command:
-
--   Command: make all
-
--   Action: Sequentially executes the commands to create Bronze, Silver,
-    and Gold tables, followed by running the ETL process. This is a
-    comprehensive command that sets up the entire data pipeline.
-
-[\*\*Github](https://github.com/Stefen-Taime/investissement)\*\*
