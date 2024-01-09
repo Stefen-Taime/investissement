@@ -1,0 +1,32 @@
+
+content = """
+Problem Resolution: 'mc' Command Not Found in Jenkins Pipeline
+
+Follow these steps to properly install and configure the 'mc' command in a Jenkins container:
+
+1. Access Jenkins Container:
+   Use this command to enter the Jenkins container in interactive mode:
+   docker exec -ti jenkins_container /bin/bash
+
+2. Update Package List:
+   Before installing new packages, ensure that the list of available packages is up to date:
+   apt-get update
+
+3. Install Wget:
+   Wget is used for downloading files from the internet. Install it using the following command:
+   apt-get install wget
+
+4. Download 'mc' Client:
+   Use Wget to download the latest version of the 'mc' client for Linux:
+   wget https://dl.min.io/client/mc/release/linux-amd64/mc
+
+5. Make the File Executable:
+   Change the permissions of the downloaded file to make it executable:
+   chmod +x mc
+
+6. Move 'mc' to Binary Directory:
+   To make the 'mc' command globally accessible, move it to the `/usr/local/bin` directory:
+   mv mc /usr/local/bin
+
+After following these steps, the 'mc' command should be available in your Jenkins pipeline.
+"""
