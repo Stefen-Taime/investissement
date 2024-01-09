@@ -6,102 +6,70 @@ ETL Process:
 
 ![](https://cdn-images-1.medium.com/max/3214/1*FeFC80C7gIjGXh3RhjTlHg.png)
 
-1.  Extraction (Bronze Layer): The process starts with extracting CSV
-    data files corresponding to various stock tickers. Using PySpark,
-    the script reads these files, enforces a schema to maintain data
-    integrity, and stores this raw data in a Delta table known as the
-    'Bronze' layer.
+### Extraction (Bronze Layer)
 
-2.  Transformation (Silver Layer): The transformation phase involves
-    cleaning and restructuring the data. This step includes type casting
-    and aggregation of financial metrics such as high, low, opening, and
-    closing prices, as well as volume traded. The resultant structured
-    data is saved in another Delta table, termed the 'Silver' layer.
-    This layer serves two purposes: storing individual asset performance
-    and market trend analysis.
+- **Description**: The process starts with extracting CSV data files corresponding to various stock tickers. Using PySpark, the script reads these files, enforces a schema to maintain data integrity, and stores this raw data in a Delta table known as the 'Bronze' layer.
 
-3.  Load (Gold Layer): The final phase involves creating the 'Gold'
-    layer, where the data is further refined for high-level analysis.
-    This includes calculating the average return on investment (ROI) and
-    volatility for each stock, segmented by year and month. The Gold
-    layer represents the most valuable and insightful data, ready for
-    in-depth analysis and decision-making processes.
+### Transformation (Silver Layer)
 
-Technology Stack:
+- **Description**: The transformation phase involves cleaning and restructuring the data. This includes type casting and aggregating financial metrics such as high, low, opening, and closing prices, as well as volume traded. The resultant structured data is saved in another Delta table, termed the 'Silver' layer. This layer serves two purposes: storing individual asset performance and aiding in market trend analysis.
 
--   PySpark: Utilized for its powerful in-memory data processing
-    capabilities, which are essential for handling large datasets
-    typically found in financial markets.
+### Load (Gold Layer)
 
--   Delta Lake: Chosen for its ACID transaction support and time-travel
-    features, enabling reliable and consistent data storage and
-    retrieval.
+- **Description**: The final phase involves creating the 'Gold' layer, where the data is further refined for high-level analysis. This includes calculating the average return on investment (ROI) and volatility for each stock, segmented by year and month. The Gold layer represents the most valuable and insightful data, ready for in-depth analysis and decision-making processes.
 
-Pipeline Stages CICD:
+## Technology Stack
 
-![](https://cdn-images-1.medium.com/max/3194/1*WM28jPhRZy79TvEZabxDDQ.png)
+- **PySpark**: Utilized for its powerful in-memory data processing capabilities, essential for handling large datasets typically found in financial markets.
 
-1.  Initialization: Sets the groundwork for the pipeline execution,
-    including environment variable setup.
+- **Delta Lake**: Chosen for its ACID transaction support and time-travel features, enabling reliable and consistent data storage and retrieval.
+# CI/CD Pipeline Stages
 
-2.  Clone Repo: Retrieves the project source code from the specified
-    GitHub repository.
+## Pipeline Stages
 
-3.  Tests: Verifies the presence of essential CSV files, crucial for the
-    investment analysis. This step ensures data integrity before
-    proceeding further.
+### Initialization
+- **Description**: Sets the groundwork for the pipeline execution, including environment variable setup.
 
-4.  Prepare Artifact: Compiles the necessary components of the project
-    into a compressed file. This artifact represents the build which
-    will be deployed.
+### Clone Repo
+- **Description**: Retrieves the project source code from the specified GitHub repository.
 
-5.  Upload to MinIO: Securely transfers the prepared artifact to MinIO
-    for storage, ensuring that the build is available for deployment.
+### Tests
+- **Description**: Verifies the presence of essential CSV files, crucial for the investment analysis. This step ensures data integrity before proceeding further.
 
-6.  Checkout Main Branch: Switches to the main branch in the repository,
-    preparing it for the integration of new features or updates.
+### Prepare Artifact
+- **Description**: Compiles the necessary components of the project into a compressed file. This artifact represents the build which will be deployed.
 
-7.  Merge Feature into Main: Merges the feature branch into the main
-    branch, combining new developments into the primary codebase.
+### Upload to MinIO
+- **Description**: Securely transfers the prepared artifact to MinIO for storage, ensuring that the build is available for deployment.
 
-8.  Deployment: Represents the stage where the application would be
-    deployed, although specific deployment steps would depend on the
-    project requirements.
+### Checkout Main Branch
+- **Description**: Switches to the main branch in the repository, preparing it for the integration of new features or updates.
 
-![](https://cdn-images-1.medium.com/max/3826/1*ZDVB4GUlEkKsdRGUBm4n7g.png)
+### Merge Feature into Main
+- **Description**: Merges the feature branch into the main branch, combining new developments into the primary codebase.
 
-1.  Creating a New Branch on GitHub: When a developer wants to add a new
-    feature, they start by creating a new branch on GitHub. This branch
-    is often named according to the feature, for example,
-    feature/01/buildRacineProject.
+### Deployment
+- **Description**: Represents the stage where the application would be deployed, although specific deployment steps would depend on the project requirements.
 
-2.  Pushing Code and Triggering the Jenkins Pipeline: After developing
-    the feature and pushing their code to the GitHub branch, a Jenkins
-    pipeline is triggered. This pipeline is defined in a Jenkinsfile and
-    follows several stages:
+![CI/CD Pipeline Overview](https://cdn-images-1.medium.com/max/3194/1*WM28jPhRZy79TvEZabxDDQ.png)
 
--   Initialization: The pipeline starts, displaying a start-up message.
+## Process of Adding New Features
 
--   Cloning the Repository: Jenkins clones the repository from GitHub
-    using the specified credentials and branch.
+### Creating a New Branch on GitHub
+- **Description**: When a developer wants to add a new feature, they start by creating a new branch on GitHub, often named according to the feature, e.g., `feature/01/buildRacineProject`.
 
--   Tests: Scripts are run to check for the presence of necessary files
-    (such as CSV files) and other tests.
+### Pushing Code and Triggering the Jenkins Pipeline
+- **Description**: After developing the feature and pushing their code to the GitHub branch, a Jenkins pipeline is triggered. This pipeline follows several stages:
+  - **Initialization**: Displays a start-up message.
+  - **Cloning the Repository**: Jenkins clones the repository from GitHub.
+  - **Tests**: Runs scripts to check for the presence of necessary files and other tests.
+  - **Preparing the Artifact**: Creates a folder for the artifact, which is then compressed.
+  - **Uploading to MinIO**: The artifact is uploaded to MinIO, an object storage service.
+  - **Merging with the Main Branch**: The feature branch is merged with the main branch of GitHub.
+  - **Deployment**: Begins the deployment of the application.
+  - **Post-Process**: Cleanup and feedback steps post-pipeline, depending on the build success.
 
--   Preparing the Artifact: A folder is created to store the artifact,
-    which is then compressed into a .tar.gz format.
-
--   Uploading to MinIO: The artifact is uploaded to MinIO, an object
-    storage service, using specified credentials.
-
--   Merging with the Main Branch: After passing all the previous stages,
-    the feature branch is merged with the main branch of GitHub.
-
--   Deployment: Once the merge is successful, the deployment of the
-    application can begin.
-
--   Post-Process: After the pipeline, there are steps for cleanup and
-    feedback depending on whether the build was a success or a failure.
+![Jenkins Pipeline Overview](https://cdn-images-1.medium.com/max/3826/1*ZDVB4GUlEkKsdRGUBm4n7g.png)
 
 
 ## Starting Docker Containers
